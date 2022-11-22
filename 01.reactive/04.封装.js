@@ -10,7 +10,7 @@ function effect(fn) {
   fn();
 }
 
-// 将追踪副作用函数和触发副作用函数的相关代码封装到track和triggle函数中
+// 将追踪副作用函数和触发副作用函数的相关代码封装到track和trigger函数中
 const bucket = new WeakMap();
 function track(target, key) {
   let depsMap = bucket.get(target);
@@ -25,7 +25,7 @@ function track(target, key) {
   }
   deps.add(activeEffect);
 }
-function triggle(target, key) {
+function trigger(target, key) {
   const depsMap = bucket.get(target);
   if (!depsMap) return;
   const deps = depsMap.get(key);
@@ -39,7 +39,7 @@ const obj = new Proxy(data, {
   },
   set(target, key, newVal) {
     target[key] = newVal;
-    triggle(target, key);
+    trigger(target, key);
     return true;
   },
 });
@@ -69,5 +69,5 @@ obj.text = "reactive";
 console.log("执行副作用函数");
 obj.ok = false;
 console.log("此时res的值永远是‘not’，不应该再执行副作用函数");
-obj.text = "no excute";
-obj.text = "no excute again"; // 但是这里还是执行了副作用函数
+obj.text = "no execute";
+obj.text = "no execute again"; // 但是这里还是执行了副作用函数

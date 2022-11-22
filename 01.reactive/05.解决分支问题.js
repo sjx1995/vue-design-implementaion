@@ -24,7 +24,6 @@ function cleanup(fn) {
   fn.deps.length = 0;
 }
 
-const data = { ok: false, text: "hello world" };
 const bucket = new WeakMap();
 function track(target, key) {
   let depsMap = bucket.get(target);
@@ -41,7 +40,7 @@ function track(target, key) {
   // 将包含当前effect的set，追踪到effect.deps
   activeEffect.deps.push(deps);
 }
-function triggle(target, key) {
+function trigger(target, key) {
   const depsMap = bucket.get(target);
   if (!depsMap) return;
   const deps = depsMap.get(key);
@@ -49,6 +48,8 @@ function triggle(target, key) {
   const anotherDeps = new Set(deps);
   anotherDeps.forEach((fn) => fn());
 }
+
+const data = { ok: false, text: "hello world" };
 const obj = new Proxy(data, {
   get(target, key) {
     if (!activeEffect) return target[key];
@@ -57,7 +58,7 @@ const obj = new Proxy(data, {
   },
   set(target, key, newVal) {
     target[key] = newVal;
-    triggle(target, key);
+    trigger(target, key);
     return true;
   },
 });
