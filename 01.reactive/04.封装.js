@@ -12,6 +12,7 @@ function effect(fn) {
 
 // 将追踪副作用函数和触发副作用函数的相关代码封装到track和trigger函数中
 const bucket = new WeakMap();
+// 追踪：追踪的是副作用函数，然后保存副作用函数和其依赖之前的关系
 function track(target, key) {
   let depsMap = bucket.get(target);
   if (!depsMap) {
@@ -25,6 +26,7 @@ function track(target, key) {
   }
   deps.add(activeEffect);
 }
+// 触发：根据target和key，触发之前收集的对应的副作用函数，即实现了改变依赖自动触发的响应式
 function trigger(target, key) {
   const depsMap = bucket.get(target);
   if (!depsMap) return;
